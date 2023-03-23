@@ -23,7 +23,9 @@ const galleryContainer = document.querySelector('.gallery');
 const cardsMarkup = createGalleryCardsMarkup(galleryItems);
 galleryContainer.insertAdjacentHTML('beforeend', cardsMarkup)
 
-function createGalleryCardsMarkup(galleryItems) { /*динамическая разметка */
+galleryContainer.addEventListener('click', onGalleryContainerClick) 
+
+function createGalleryCardsMarkup(galleryItems) { /*динамическая разметка, рендерит всю разметку галереи */
   const markup = galleryItems.map(({preview, original, description}) => { /* мепаем массив,возвращаем карточку для каждого объекта, и деструктуризируем свойства (preview, original, description), свойства на объекте есть, приходят в колбек мэпа и деструктуризируем */
     return `
   <li class="gallery__item">
@@ -40,4 +42,18 @@ function createGalleryCardsMarkup(galleryItems) { /*динамическая р�
   }).join('');
 
   return markup; /* возвращаем массив строк */
+}
+
+function onGalleryContainerClick(event) {
+  console.log(event.target);
+  event.preventDefault()
+
+  if (event.target.nodeName !== 'IMG') {
+    return
+  }
+  const onGalleryModal = event.target.dataset.source
+  console.log(onGalleryModal);
+
+  const imgParameter = basicLightbox.create(`<img src='${onGalleryModal}'width='800' height='600'>`)
+imgParameter.show()
 }
