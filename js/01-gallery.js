@@ -18,7 +18,7 @@ console.log(galleryItems);
 
 Закрытие с клавиатуры 
 Добавь закрытие модального окна по нажатию клавиши Escape. Сделай так, чтобы прослушивание клавиатуры было только пока открыто модальное окно. У библиотеки basicLightbox есть метод для программного закрытия модального окна.*/
-// console.log(createGalleryCardsMarkup(galleryItems));
+
 const galleryContainer = document.querySelector('.gallery');
 const cardsMarkup = createGalleryCardsMarkup(galleryItems); /* хранит результат вызова функции создания всей разметки */
 galleryContainer.insertAdjacentHTML('beforeend', cardsMarkup); /* распарсит все элементы в конце */
@@ -43,7 +43,6 @@ function createGalleryCardsMarkup(galleryItems) { /*создаем динами�
 
   return markup; /* возвращаем массив строк/карточек */
 }
-
 function onGalleryContainerClick(event) { /* вешаем делегирование на контейнер */
   console.log(event.target); /* ссылка на то куда кликнули (где зародилось событие) */
   event.preventDefault(); /* для отмены действия браузера (перезагрузка или переход на новую страницу) по умолчанию на объекте события используем метод preventDefault() */
@@ -51,6 +50,7 @@ function onGalleryContainerClick(event) { /* вешаем делегирован
   if (event.target.nodeName !== 'IMG') { /* в обработчике события клика используем event.target, чтобы получить элемент на котором произошло событие, для проверки типа элемента 'IMG' используем свойство nodeName */
     return
   }
+  window.addEventListener('keydown', onEscKeyPress); /* подписка на глобальные виндов keydown */
   const onGalleryModal = event.target.dataset.source; /* получения значения data-атрибута (свойство dataset), после которого идет имя атрибута data-source="${original}" */
   console.log(onGalleryModal);
 
@@ -59,9 +59,15 @@ function onGalleryContainerClick(event) { /* вешаем делегирован
   `);
   imgParameter.show(); /* открытие модалки и отображение изображения с помощью галереи basicLightbox */
 
-  galleryContainer.addEventListener('keydown', (evt) => { /* закрытие модалки при нажитии Escape, а свойство code возвращает код физической клавиши на клавиатур */
+function onCloseModal() { /* закрытие модалки по Escape */
+  window.removeEventListener('keydown', onEscKeyPress); /* отписка от глобальные виндов keydown во время закрытия */
+  imgParameter.close();
+  }
+
+function onEscKeyPress(evt) {
+  console.log(evt.code);
     if (evt.code === 'Escape') {
-      imgParameter.close();
+      onCloseModal();
     }
-  });
+  }
 }
